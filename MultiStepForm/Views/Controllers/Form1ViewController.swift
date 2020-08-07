@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  Form1ViewController.swift
 //  MultiStepForm
 //
 //  Created by Jaedoo Ko on 2020/08/07.
@@ -8,13 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class Form1ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
     }
-
-
 }
 
