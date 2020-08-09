@@ -10,6 +10,11 @@
 		080A1BAF24DD164A00E48122 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080A1BAE24DD164A00E48122 /* Network.swift */; };
 		080A1BB124DD16C800E48122 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080A1BB024DD16C800E48122 /* ViewController.swift */; };
 		080A1BB324DD21DE00E48122 /* Form3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080A1BB224DD21DE00E48122 /* Form3ViewController.swift */; };
+		0891677424DFE02E00947DB7 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677324DFE02E00947DB7 /* Coordinator.swift */; };
+		0891677624DFE05D00947DB7 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677524DFE05D00947DB7 /* AppCoordinator.swift */; };
+		0891677824DFE1C600947DB7 /* DI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677724DFE1C600947DB7 /* DI.swift */; };
+		0891677A24E0350100947DB7 /* SurveyCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677924E0350100947DB7 /* SurveyCoordinator.swift */; };
+		0891677C24E03BEA00947DB7 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677B24E03BEA00947DB7 /* AlertViewController.swift */; };
 		08A7AD2B24DD0AB80024D6C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */; };
 		08A7AD2F24DD0AB80024D6C1 /* Form1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */; };
 		08A7AD3424DD0AB80024D6C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08A7AD3324DD0AB80024D6C1 /* Assets.xcassets */; };
@@ -22,6 +27,11 @@
 		080A1BAE24DD164A00E48122 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		080A1BB024DD16C800E48122 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		080A1BB224DD21DE00E48122 /* Form3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form3ViewController.swift; sourceTree = "<group>"; };
+		0891677324DFE02E00947DB7 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		0891677524DFE05D00947DB7 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		0891677724DFE1C600947DB7 /* DI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DI.swift; sourceTree = "<group>"; };
+		0891677924E0350100947DB7 /* SurveyCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinator.swift; sourceTree = "<group>"; };
+		0891677B24E03BEA00947DB7 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		08A7AD2724DD0AB80024D6C1 /* MultiStepForm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiStepForm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form1ViewController.swift; sourceTree = "<group>"; };
@@ -43,6 +53,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0891677224DFDFED00947DB7 /* Coordinators */ = {
+			isa = PBXGroup;
+			children = (
+				0891677324DFE02E00947DB7 /* Coordinator.swift */,
+				0891677524DFE05D00947DB7 /* AppCoordinator.swift */,
+				0891677924E0350100947DB7 /* SurveyCoordinator.swift */,
+			);
+			path = Coordinators;
+			sourceTree = "<group>";
+		};
 		08A7AD1E24DD0AB80024D6C1 = {
 			isa = PBXGroup;
 			children = (
@@ -63,6 +83,8 @@
 			isa = PBXGroup;
 			children = (
 				08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */,
+				0891677724DFE1C600947DB7 /* DI.swift */,
+				0891677224DFDFED00947DB7 /* Coordinators */,
 				08A7AD5024DD0CBC0024D6C1 /* Models */,
 				08A7AD4F24DD0C990024D6C1 /* ViewControllers */,
 				08A7AD3324DD0AB80024D6C1 /* Assets.xcassets */,
@@ -79,6 +101,7 @@
 				08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */,
 				08A7AD3E24DD0C1E0024D6C1 /* Form2ViewController.swift */,
 				080A1BB224DD21DE00E48122 /* Form3ViewController.swift */,
+				0891677B24E03BEA00947DB7 /* AlertViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -162,12 +185,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0891677424DFE02E00947DB7 /* Coordinator.swift in Sources */,
 				080A1BB124DD16C800E48122 /* ViewController.swift in Sources */,
 				080A1BAF24DD164A00E48122 /* Network.swift in Sources */,
+				0891677A24E0350100947DB7 /* SurveyCoordinator.swift in Sources */,
 				08A7AD3F24DD0C1E0024D6C1 /* Form2ViewController.swift in Sources */,
 				08A7AD5624DD0D4B0024D6C1 /* SurveyAnswer.swift in Sources */,
 				08A7AD2F24DD0AB80024D6C1 /* Form1ViewController.swift in Sources */,
+				0891677C24E03BEA00947DB7 /* AlertViewController.swift in Sources */,
+				0891677624DFE05D00947DB7 /* AppCoordinator.swift in Sources */,
 				08A7AD2B24DD0AB80024D6C1 /* AppDelegate.swift in Sources */,
+				0891677824DFE1C600947DB7 /* DI.swift in Sources */,
 				080A1BB324DD21DE00E48122 /* Form3ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

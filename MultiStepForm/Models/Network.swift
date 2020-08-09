@@ -8,10 +8,16 @@
 
 import Foundation
 
-struct Network {
+protocol NetworkType {
+    typealias SurveySubmitResult = Result<String, Error>
+    
+    func submitSurvey(survey: SurveyAnswer, completion: @escaping (SurveySubmitResult) -> Void)
+}
+
+struct Network: NetworkType {
     func submitSurvey(
         survey: SurveyAnswer,
-        completion: @escaping (Result<String, Error>) -> Void
+        completion: @escaping (SurveySubmitResult) -> Void
     ) {
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
             print(survey.text)

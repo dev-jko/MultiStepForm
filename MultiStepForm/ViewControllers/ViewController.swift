@@ -10,8 +10,26 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    // MARK: - UI Properties
+    
     private let titleLabel: UILabel = UILabel()
     private let surveyButton: UIButton = UIButton()
+    
+    // MARK: - Properties
+    
+    private weak var coordinator: SurveyFormCoordinatorType?
+    
+    // MARK: - Lifecycle
+    
+    init(coordinator: SurveyFormCoordinatorType) {
+        self.coordinator = coordinator
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +43,8 @@ class ViewController: UIViewController {
             for: .touchUpInside
         )
     }
+    
+    // MARK: - Functions
     
     private func setUpLayout() {
         [
@@ -58,8 +78,6 @@ class ViewController: UIViewController {
     
     @objc
     private func surveyButtonClicked(_ sender: UIButton) {
-        let survey = SurveyAnswer()
-        let viewController = Form1ViewController(survey: survey)
-        navigationController?.pushViewController(viewController, animated: true)
+        coordinator?.pushToSurveyForm()
     }
 }

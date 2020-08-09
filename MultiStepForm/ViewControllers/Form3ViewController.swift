@@ -16,13 +16,20 @@ class Form3ViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var survey: SurveyAnswer
-    private let network: Network = Network()
+    private let survey: SurveyAnswer
+    private weak var coordinator: SurveySubmitCoordinatorType?
+    private let network: NetworkType
     
     // MARK: - Lifecycle
     
-    init(survey: SurveyAnswer) {
+    init(
+        survey: SurveyAnswer,
+        coordinator: SurveySubmitCoordinatorType,
+        network: NetworkType
+    ) {
         self.survey = survey
+        self.coordinator = coordinator
+        self.network = network
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -106,21 +113,15 @@ class Form3ViewController: UIViewController {
         navigationItem.setRightBarButton(submitButton, animated: true)
     }
     
-    private func popToRoot() {
-        navigationController?.popToRootViewController(animated: true)
-    }
-    
     @objc
     private func submitButtonClicked(_ sender: UIBarButtonItem) {
         network.submitSurvey(survey: survey) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let msg):
-                    print(msg)
-                    self?.popToRoot()
+                    self?.coordinator?.finishSurveyForm()
                 case .failure(let err):
-                    print(err)
-                    // error handling
+                    self?.coordinator?.alertError()
                 }
             }
         }

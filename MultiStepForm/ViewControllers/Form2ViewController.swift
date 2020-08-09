@@ -19,11 +19,16 @@ class Form2ViewController: UIViewController {
     // MARK: - Properties
     
     private let survey: SurveyAnswer
+    private weak var coordinator: Form3CoordinatorType?
     
     // MARK: - Lifecycle
     
-    init(survey: SurveyAnswer) {
+    init(
+        survey: SurveyAnswer,
+        coordinator: Form3CoordinatorType
+    ) {
         self.survey = survey
+        self.coordinator = coordinator
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -97,8 +102,7 @@ class Form2ViewController: UIViewController {
     
     @objc
     private func nextButtonClicked(_ sender: UIBarButtonItem) {
-        let viewController = Form3ViewController(survey: survey)
-        navigationController?.pushViewController(viewController, animated: true)
+        coordinator?.pushToForm3(survey: survey)
     }
     
     private func buttonSelectionChagned(index: Int) {

@@ -17,11 +17,16 @@ final class Form1ViewController: UIViewController {
     // MARK: - Properties
     
     private let survey: SurveyAnswer
+    private weak var coordinator: Form2CoordinatorType?
     
     // MARK: - Lifecycle
 
-    init(survey: SurveyAnswer) {
+    init(
+        survey: SurveyAnswer,
+        coordinator: Form2CoordinatorType
+    ) {
         self.survey = survey
+        self.coordinator = coordinator
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -83,8 +88,7 @@ final class Form1ViewController: UIViewController {
     }
     
     private func pushToNext() {
-        let viewController = Form2ViewController(survey: survey)
-        navigationController?.pushViewController(viewController, animated: true)
+        coordinator?.pushToForm2(survey: survey)
     }
     
     private func changeText() {
