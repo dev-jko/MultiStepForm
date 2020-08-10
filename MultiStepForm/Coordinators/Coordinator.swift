@@ -9,5 +9,16 @@
 import Foundation
 
 protocol Coordinator: class {
+    var parent: Coordinator? { get set }
+    var children: [Coordinator] { get set }
+    
     func start()
+    func popChild()
+}
+
+extension Coordinator {
+    func popChild() {
+        guard !children.isEmpty else { return }
+        _ = children.popLast()
+    }
 }

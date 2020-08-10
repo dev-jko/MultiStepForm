@@ -13,18 +13,19 @@ class Form3ViewController: UIViewController {
     // MARK: - UI Properties
     
     private let buttons: [UIButton] = [UIButton(), UIButton(), UIButton(), UIButton()]
+    private let loadingIndicator: LoadingIndicator = LoadingIndicator()
     
     // MARK: - Properties
     
     private let survey: SurveyAnswer
-    private weak var coordinator: SurveySubmitCoordinatorType?
+    private weak var coordinator: SurveyFinishCoordinatorType?
     private let network: NetworkType
     
     // MARK: - Lifecycle
     
     init(
         survey: SurveyAnswer,
-        coordinator: SurveySubmitCoordinatorType,
+        coordinator: SurveyFinishCoordinatorType,
         network: NetworkType
     ) {
         self.survey = survey
@@ -62,7 +63,7 @@ class Form3ViewController: UIViewController {
     // MARK: - Functions
     
     private func setUpLayout() {
-        buttons
+        (buttons + [loadingIndicator])
             .forEach {
                 $0.translatesAutoresizingMaskIntoConstraints = false
                 view.addSubview($0)
@@ -86,6 +87,9 @@ class Form3ViewController: UIViewController {
             buttons[3].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
             buttons[3].topAnchor.constraint(equalTo: buttons[0].bottomAnchor),
             buttons[3].widthAnchor.constraint(equalTo: buttons[2].widthAnchor),
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -115,14 +119,14 @@ class Form3ViewController: UIViewController {
     
     @objc
     private func submitButtonClicked(_ sender: UIBarButtonItem) {
+        loadingIndicator.startAnimating()
         network.submitSurvey(survey: survey) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let msg):
-                    self?.coordinator?.finishSurveyForm()
-                case .failure(let err):
-                    self?.coordinator?.alertError()
-                }
+            self?.loadingIndicator.stopAnimating()
+            switch result {
+            case .success(let msg):
+                self?.alert(title: "제출 완료", message: msg, completion: self?.coordinator?.finishSurveyForm)
+            case .failure(let err):
+                self?.alert(title: "에러", message: err.localizedDescription, completion: nil)
             }
         }
     }

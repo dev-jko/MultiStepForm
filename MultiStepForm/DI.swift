@@ -65,7 +65,7 @@ extension SurveyAnswer {
 }
 
 extension Form1ViewController {
-    typealias Factory = (SurveyAnswer, Form2CoordinatorType) -> Form1ViewController
+    typealias Factory = (SurveyAnswer, Form2CoordinatorType & SurveyFinishCoordinatorType) -> Form1ViewController
 }
 
 extension Form2ViewController {
@@ -73,5 +73,5 @@ extension Form2ViewController {
 }
 
 extension Form3ViewController {
-    typealias Factory = (SurveyAnswer, SurveySubmitCoordinatorType) -> Form3ViewController
+    typealias Factory = (SurveyAnswer, SurveyFinishCoordinatorType) -> Form3ViewController
 }

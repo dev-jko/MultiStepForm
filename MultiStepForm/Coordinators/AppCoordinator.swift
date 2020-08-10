@@ -21,7 +21,8 @@ class AppCoordinator: AppCoordinatorType {
     // MARK: - Properties
     
     lazy var window: UIWindow = UIWindow()
-    private var children = [Coordinator]()
+    var parent: Coordinator?
+    var children = [Coordinator]()
     private let viewControllerFactory: ViewController.Factory
     private let surveyCoordinatorFactory: SurveyCoordinator.Factory
     
@@ -47,15 +48,13 @@ class AppCoordinator: AppCoordinatorType {
 extension AppCoordinator: SurveyFormCoordinatorType {
     func pushToSurveyForm() {
         let navigationController = UINavigationController()
+        navigationController.modalPresentationStyle = .fullScreen
+
         let coordinator = surveyCoordinatorFactory(navigationController)
+        coordinator.parent = self
         coordinator.start()
         children.append(coordinator)
         
-        if let rootViewController = window.rootViewController {
-            navigationController.modalPresentationStyle = .fullScreen
-            rootViewController.present(navigationController, animated: true, completion: nil)
-        } else {
-            window.rootViewController = navigationController
-        }
+        window.rootViewController?.present(navigationController, animated: true, completion: nil)
     }
 }

@@ -16,15 +16,16 @@ protocol Form3CoordinatorType: class {
     func pushToForm3(survey: SurveyAnswer)
 }
 
-protocol SurveySubmitCoordinatorType: class {
+protocol SurveyFinishCoordinatorType: class {
     func finishSurveyForm()
-    func alertError()
 }
 
 class SurveyCoordinator: Coordinator {
-    
+        
     // MARK: - Properties
     
+    var parent: Coordinator?
+    var children: [Coordinator] = []
     private let navigationController: UINavigationController
     private let surveyAnswerFactory: SurveyAnswer.Factory
     private let form1ViewControllerFactory: Form1ViewController.Factory
@@ -70,12 +71,9 @@ extension SurveyCoordinator: Form3CoordinatorType {
     }
 }
 
-extension SurveyCoordinator: SurveySubmitCoordinatorType {
+extension SurveyCoordinator: SurveyFinishCoordinatorType {
     func finishSurveyForm() {
-        
-    }
-    
-    func alertError() {
-        
+        navigationController.dismiss(animated: true, completion: nil)
+        parent?.popChild()
     }
 }

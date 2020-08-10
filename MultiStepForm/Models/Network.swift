@@ -19,11 +19,13 @@ struct Network: NetworkType {
         survey: SurveyAnswer,
         completion: @escaping (SurveySubmitResult) -> Void
     ) {
-        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 2) {
             print(survey.text)
             print(survey.radio)
             print(survey.checkbox)
-            completion(.success("설문에 참여해주셔서 감사합니다"))
+            DispatchQueue.main.async {
+                completion(.success("설문에 참여해주셔서 감사합니다"))
+            }
         }
     }
 }

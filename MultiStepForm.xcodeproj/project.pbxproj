@@ -14,13 +14,14 @@
 		0891677624DFE05D00947DB7 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677524DFE05D00947DB7 /* AppCoordinator.swift */; };
 		0891677824DFE1C600947DB7 /* DI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677724DFE1C600947DB7 /* DI.swift */; };
 		0891677A24E0350100947DB7 /* SurveyCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677924E0350100947DB7 /* SurveyCoordinator.swift */; };
-		0891677C24E03BEA00947DB7 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0891677B24E03BEA00947DB7 /* AlertViewController.swift */; };
 		08A7AD2B24DD0AB80024D6C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */; };
 		08A7AD2F24DD0AB80024D6C1 /* Form1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */; };
 		08A7AD3424DD0AB80024D6C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08A7AD3324DD0AB80024D6C1 /* Assets.xcassets */; };
 		08A7AD3724DD0AB80024D6C1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08A7AD3524DD0AB80024D6C1 /* LaunchScreen.storyboard */; };
 		08A7AD3F24DD0C1E0024D6C1 /* Form2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD3E24DD0C1E0024D6C1 /* Form2ViewController.swift */; };
 		08A7AD5624DD0D4B0024D6C1 /* SurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A7AD5524DD0D4B0024D6C1 /* SurveyAnswer.swift */; };
+		08B2455424E12B6E002981F7 /* LoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2455324E12B6E002981F7 /* LoadingIndicator.swift */; };
+		08B2455724E1665A002981F7 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2455624E1665A002981F7 /* Alertable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +32,6 @@
 		0891677524DFE05D00947DB7 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		0891677724DFE1C600947DB7 /* DI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DI.swift; sourceTree = "<group>"; };
 		0891677924E0350100947DB7 /* SurveyCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinator.swift; sourceTree = "<group>"; };
-		0891677B24E03BEA00947DB7 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		08A7AD2724DD0AB80024D6C1 /* MultiStepForm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiStepForm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form1ViewController.swift; sourceTree = "<group>"; };
@@ -40,6 +40,8 @@
 		08A7AD3824DD0AB80024D6C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		08A7AD3E24DD0C1E0024D6C1 /* Form2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form2ViewController.swift; sourceTree = "<group>"; };
 		08A7AD5524DD0D4B0024D6C1 /* SurveyAnswer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyAnswer.swift; sourceTree = "<group>"; };
+		08B2455324E12B6E002981F7 /* LoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicator.swift; sourceTree = "<group>"; };
+		08B2455624E1665A002981F7 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		083C8E7924E1284200B0FD1E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				08B2455324E12B6E002981F7 /* LoadingIndicator.swift */,
+				08A7AD4F24DD0C990024D6C1 /* Controllers */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		0891677224DFDFED00947DB7 /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,9 +95,10 @@
 			children = (
 				08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */,
 				0891677724DFE1C600947DB7 /* DI.swift */,
+				08B2455524E16631002981F7 /* Extensions */,
 				0891677224DFDFED00947DB7 /* Coordinators */,
 				08A7AD5024DD0CBC0024D6C1 /* Models */,
-				08A7AD4F24DD0C990024D6C1 /* ViewControllers */,
+				083C8E7924E1284200B0FD1E /* Views */,
 				08A7AD3324DD0AB80024D6C1 /* Assets.xcassets */,
 				08A7AD3524DD0AB80024D6C1 /* LaunchScreen.storyboard */,
 				08A7AD3824DD0AB80024D6C1 /* Info.plist */,
@@ -94,16 +106,15 @@
 			path = MultiStepForm;
 			sourceTree = "<group>";
 		};
-		08A7AD4F24DD0C990024D6C1 /* ViewControllers */ = {
+		08A7AD4F24DD0C990024D6C1 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				080A1BB024DD16C800E48122 /* ViewController.swift */,
 				08A7AD2E24DD0AB80024D6C1 /* Form1ViewController.swift */,
 				08A7AD3E24DD0C1E0024D6C1 /* Form2ViewController.swift */,
 				080A1BB224DD21DE00E48122 /* Form3ViewController.swift */,
-				0891677B24E03BEA00947DB7 /* AlertViewController.swift */,
 			);
-			path = ViewControllers;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		08A7AD5024DD0CBC0024D6C1 /* Models */ = {
@@ -113,6 +124,14 @@
 				080A1BAE24DD164A00E48122 /* Network.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		08B2455524E16631002981F7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				08B2455624E1665A002981F7 /* Alertable.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,9 +209,10 @@
 				080A1BAF24DD164A00E48122 /* Network.swift in Sources */,
 				0891677A24E0350100947DB7 /* SurveyCoordinator.swift in Sources */,
 				08A7AD3F24DD0C1E0024D6C1 /* Form2ViewController.swift in Sources */,
+				08B2455724E1665A002981F7 /* Alertable.swift in Sources */,
+				08B2455424E12B6E002981F7 /* LoadingIndicator.swift in Sources */,
 				08A7AD5624DD0D4B0024D6C1 /* SurveyAnswer.swift in Sources */,
 				08A7AD2F24DD0AB80024D6C1 /* Form1ViewController.swift in Sources */,
-				0891677C24E03BEA00947DB7 /* AlertViewController.swift in Sources */,
 				0891677624DFE05D00947DB7 /* AppCoordinator.swift in Sources */,
 				08A7AD2B24DD0AB80024D6C1 /* AppDelegate.swift in Sources */,
 				0891677824DFE1C600947DB7 /* DI.swift in Sources */,

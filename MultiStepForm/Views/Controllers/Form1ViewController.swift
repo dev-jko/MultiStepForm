@@ -17,13 +17,13 @@ final class Form1ViewController: UIViewController {
     // MARK: - Properties
     
     private let survey: SurveyAnswer
-    private weak var coordinator: Form2CoordinatorType?
+    private weak var coordinator: (Form2CoordinatorType & SurveyFinishCoordinatorType)?
     
     // MARK: - Lifecycle
 
     init(
         survey: SurveyAnswer,
-        coordinator: Form2CoordinatorType
+        coordinator: Form2CoordinatorType & SurveyFinishCoordinatorType
     ) {
         self.survey = survey
         self.coordinator = coordinator
@@ -41,6 +41,7 @@ final class Form1ViewController: UIViewController {
         setUpLayout()
         bindStyles()
         setNextButton()
+        setBackButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +72,16 @@ final class Form1ViewController: UIViewController {
         textField.borderStyle = .line
     }
     
+    private func setBackButton() {
+        let backButton = UIBarButtonItem(
+            title: "Back",
+            style: .plain,
+            target: self,
+            action: #selector(backButtonClicked(_:))
+        )
+        navigationItem.setLeftBarButton(backButton, animated: true)
+    }
+    
     private func setNextButton() {
         let nextButton = UIBarButtonItem(
             title: "Next",
@@ -94,5 +105,10 @@ final class Form1ViewController: UIViewController {
     private func changeText() {
         let text = textField.text ?? ""
         survey.text = text
+    }
+    
+    @objc
+    private func backButtonClicked(_ sender: UIBarButtonItem) {
+        coordinator?.finishSurveyForm()
     }
 }
