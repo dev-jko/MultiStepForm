@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  HomeViewController.swift
 //  MultiStepForm
 //
 //  Created by Jaedoo Ko on 2020/08/07.
@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-class ViewController: UIViewController {
+class HomeViewController: UIViewController {
     
     // MARK: - UI Properties
     
@@ -17,12 +19,18 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
+    private let disposeBag = DisposeBag()
     private weak var coordinator: SurveyFormCoordinatorType?
+    private let viewModel: HomeViewModelType
     
     // MARK: - Lifecycle
     
-    init(coordinator: SurveyFormCoordinatorType) {
+    init(
+        coordinator: SurveyFormCoordinatorType,
+        viewModel: HomeViewModelType
+    ) {
         self.coordinator = coordinator
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -45,6 +53,13 @@ class ViewController: UIViewController {
     }
     
     // MARK: - Functions
+    
+    private func bindViewModel() {
+        surveyButton.rx.tap
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.surveyButtonClicked() })
+            .disposed(by: disposeBag)
+    }
     
     private func setUpLayout() {
         [

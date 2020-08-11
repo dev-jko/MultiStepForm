@@ -23,13 +23,13 @@ class AppCoordinator: AppCoordinatorType {
     lazy var window: UIWindow = UIWindow()
     var parent: Coordinator?
     var children = [Coordinator]()
-    private let viewControllerFactory: ViewController.Factory
+    private let viewControllerFactory: HomeViewController.Factory
     private let surveyCoordinatorFactory: SurveyCoordinator.Factory
     
     // MARK: - Lifecycle
     
     init(
-        viewControllerFactory: @escaping ViewController.Factory,
+        viewControllerFactory: @escaping HomeViewController.Factory,
         surveyCoordinatorFactory: @escaping SurveyCoordinator.Factory
     ) {
         self.viewControllerFactory = viewControllerFactory

@@ -15,7 +15,10 @@ extension AppDependency {
         return .init(
             appCoordinator: AppCoordinator(
                 viewControllerFactory: { coordinator in
-                    ViewController(coordinator: coordinator)
+                    HomeViewController(
+                        coordinator: coordinator,
+                        viewModel: HomeViewModel()
+                    )
                 },
                 surveyCoordinatorFactory: { navigationController in
                     SurveyCoordinator(
@@ -52,8 +55,8 @@ struct AppDependency {
     let appCoordinator: AppCoordinatorType
 }
 
-extension ViewController {
-    typealias Factory = (SurveyFormCoordinatorType) -> ViewController
+extension HomeViewController {
+    typealias Factory = (SurveyFormCoordinatorType) -> HomeViewController
 }
 
 extension SurveyCoordinator {
