@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SurveyAnswer {
+struct SurveyAnswer {
     var text: String = ""
     var radio: Radio = .none
     var checkbox: [Bool] = [Bool](repeating: false, count: 4)

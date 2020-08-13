@@ -122,7 +122,7 @@ class Form2ViewController: UIViewController {
     @objc
     private func buttonClicked(_ sender: UIButton) {
         guard let selection = SurveyAnswer.Radio(rawValue: sender.tag + 1) else { return }
-        survey.radio = selection
+//        survey.radio = selection
         buttonSelectionChagned(index: sender.tag)
     }
 }

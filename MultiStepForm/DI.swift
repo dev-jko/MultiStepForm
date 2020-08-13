@@ -27,7 +27,8 @@ extension AppDependency {
                         form1ViewControllerFactory: { survey, coordinator in
                             Form1ViewController(
                                 survey: survey,
-                                coordinator: coordinator
+                                coordinator: coordinator,
+                                viewModel: Form1ViewModel()
                             )
                         },
                         form2ViewControllerFactory: { survey, coordinator in

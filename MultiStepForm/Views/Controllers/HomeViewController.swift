@@ -44,12 +44,7 @@ class HomeViewController: UIViewController {
         
         setUpLayout()
         bindStyles()
-        
-        surveyButton.addTarget(
-            self,
-            action: #selector(surveyButtonClicked(_:)),
-            for: .touchUpInside
-        )
+        bindViewModel()
     }
     
     // MARK: - Functions
@@ -58,6 +53,10 @@ class HomeViewController: UIViewController {
         surveyButton.rx.tap
             .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
             .bind(onNext: { [weak self] in self?.viewModel.inputs.surveyButtonClicked() })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.presentSurveyForm()
+            .emit(onNext: { [weak self] in self?.coordinator?.pushToSurveyForm() })
             .disposed(by: disposeBag)
     }
     
@@ -89,10 +88,5 @@ class HomeViewController: UIViewController {
         surveyButton.setTitle("설문조사 시작", for: .normal)
         surveyButton.setTitleColor(.white, for: .normal)
         surveyButton.backgroundColor = .systemBlue
-    }
-    
-    @objc
-    private func surveyButtonClicked(_ sender: UIButton) {
-        coordinator?.pushToSurveyForm()
     }
 }

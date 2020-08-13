@@ -11,7 +11,6 @@ import RxSwift
 import RxCocoa
 
 protocol HomeViewModelInputs {
-    func deinited()
     func surveyButtonClicked()
 }
 
@@ -35,11 +34,6 @@ HomeViewModelInputs, HomeViewModelOutputs {
     
     // MARK: - Inputs
     
-    private let deinitedProperty: PublishRelay<Void> = PublishRelay()
-    func deinited() {
-        deinitedProperty.accept(Void())
-    }
-    
     private let surveyButtonClickedProperty: PublishRelay<Void> = PublishRelay()
     func surveyButtonClicked() {
         surveyButtonClickedProperty.accept(Void())
@@ -56,11 +50,6 @@ HomeViewModelInputs, HomeViewModelOutputs {
     // MARK: - Lifecycle
     
     init() {
-        
-        deinitedProperty
-            .bind(onNext: { self.disposeBag = DisposeBag() })
-            .disposed(by: disposeBag)
-        
         surveyButtonClickedProperty
             .bind(to: presentSurveyFormProperty)
             .disposed(by: disposeBag)

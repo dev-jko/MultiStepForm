@@ -7,28 +7,36 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class Form1ViewController: UIViewController {
 
     // MARK: - UI Properties
     
     private let textField: UITextField = UITextField()
+    private let backButton: UIBarButtonItem = UIBarButtonItem()
+    private let nextButton: UIBarButtonItem = UIBarButtonItem()
     
     // MARK: - Properties
     
-    private let survey: SurveyAnswer
+    private let disposeBag = DisposeBag()
     private weak var coordinator: (Form2CoordinatorType & SurveyFinishCoordinatorType)?
+    private let viewModel: Form1ViewModelType
     
     // MARK: - Lifecycle
 
     init(
         survey: SurveyAnswer,
-        coordinator: Form2CoordinatorType & SurveyFinishCoordinatorType
+        coordinator: Form2CoordinatorType & SurveyFinishCoordinatorType,
+        viewModel: Form1ViewModelType
     ) {
-        self.survey = survey
         self.coordinator = coordinator
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        
+        viewModel.inputs.survey(survey)
     }
     
     required init?(coder: NSCoder) {
@@ -40,20 +48,51 @@ final class Form1ViewController: UIViewController {
         
         setUpLayout()
         bindStyles()
-        setNextButton()
-        setBackButton()
+        bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        textField.text = survey.text
-        textField.layoutIfNeeded()
+    deinit {
+        print("form 1 view controller deinited")
     }
     
     // MARK: - Functions
     
+    private func bindViewModel() {
+        textField.rx.text
+            .orEmpty
+            .bind(onNext: viewModel.inputs.textAnswer(_:))
+            .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.navigationButtonClicked(.next) })
+            .disposed(by: disposeBag)
+        
+        backButton.rx.tap
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.navigationButtonClicked(.back) })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.surveyAnswerText()
+            .drive(textField.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.coordinating()
+            .emit(onNext: { [weak self] data in
+                switch data {
+                case .next(let survey):
+                    self?.coordinator?.pushToForm2(survey: survey)
+                case .back:
+                    self?.coordinator?.finishSurveyForm()
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func setUpLayout() {
+        navigationItem.setLeftBarButton(backButton, animated: true)
+        navigationItem.setRightBarButton(nextButton, animated: true)
+        
         textField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textField)
         
@@ -70,45 +109,11 @@ final class Form1ViewController: UIViewController {
         textField.placeholder = "answer1"
         textField.textColor = .black
         textField.borderStyle = .line
-    }
-    
-    private func setBackButton() {
-        let backButton = UIBarButtonItem(
-            title: "Back",
-            style: .plain,
-            target: self,
-            action: #selector(backButtonClicked(_:))
-        )
-        navigationItem.setLeftBarButton(backButton, animated: true)
-    }
-    
-    private func setNextButton() {
-        let nextButton = UIBarButtonItem(
-            title: "Next",
-            style: .done,
-            target: self,
-            action: #selector(nextButtonClicked(_:))
-        )
-        navigationItem.setRightBarButton(nextButton, animated: true)
-    }
-    
-    @objc
-    private func nextButtonClicked(_ sender: UIBarButtonItem) {
-        changeText()
-        pushToNext()
-    }
-    
-    private func pushToNext() {
-        coordinator?.pushToForm2(survey: survey)
-    }
-    
-    private func changeText() {
-        let text = textField.text ?? ""
-        survey.text = text
-    }
-    
-    @objc
-    private func backButtonClicked(_ sender: UIBarButtonItem) {
-        coordinator?.finishSurveyForm()
+        
+        backButton.title = "Back"
+        backButton.style = .plain
+        
+        nextButton.title = "Next"
+        nextButton.style = .done
     }
 }

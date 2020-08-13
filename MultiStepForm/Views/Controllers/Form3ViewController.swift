@@ -148,7 +148,7 @@ class Form3ViewController: UIViewController {
     private func buttonClicked(_ sender: UIButton) {
         let index = sender.tag
         let value = !sender.isSelected
-        survey.checkbox[index] = value
+//        survey.checkbox[index] = value
         buttonSelectionChagned(isSelected: value, index: index)
     }
 }
