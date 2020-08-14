@@ -18,14 +18,14 @@ class Form3ViewController: UIViewController {
     // MARK: - Properties
     
     private let survey: SurveyAnswer
-    private weak var coordinator: SurveyFinishCoordinatorType?
+    private weak var coordinator: (SurveyFinishCoordinatorType & PreviousFormCoordinateType)?
     private let network: NetworkType
     
     // MARK: - Lifecycle
     
     init(
         survey: SurveyAnswer,
-        coordinator: SurveyFinishCoordinatorType,
+        coordinator: SurveyFinishCoordinatorType & PreviousFormCoordinateType,
         network: NetworkType
     ) {
         self.survey = survey

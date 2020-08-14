@@ -64,22 +64,25 @@ final class Form1ViewController: UIViewController {
             .disposed(by: disposeBag)
         
         nextButton.rx.tap
-            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
-            .bind(onNext: { [weak self] in self?.viewModel.inputs.navigationButtonClicked(.next) })
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.nextButtonClicked() })
             .disposed(by: disposeBag)
         
         backButton.rx.tap
-            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
-            .bind(onNext: { [weak self] in self?.viewModel.inputs.navigationButtonClicked(.back) })
+            .throttle(.milliseconds(300), scheduler: MainScheduler.instance)
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.backButtonClicked() })
             .disposed(by: disposeBag)
         
         viewModel.outputs.surveyAnswerText()
-            .drive(textField.rx.text)
+            .drive(onNext: { [weak self] in
+                self?.textField.text = $0
+                self?.textField.layoutIfNeeded()
+            })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.coordinating()
-            .emit(onNext: { [weak self] data in
-                switch data {
+        viewModel.outputs.coordinate()
+            .emit(onNext: { [weak self] in
+                switch $0 {
                 case .next(let survey):
                     self?.coordinator?.pushToForm2(survey: survey)
                 case .back:
@@ -110,10 +113,16 @@ final class Form1ViewController: UIViewController {
         textField.textColor = .black
         textField.borderStyle = .line
         
-        backButton.title = "Back"
+        backButton.title = "Close"
         backButton.style = .plain
         
         nextButton.title = "Next"
         nextButton.style = .done
+    }
+}
+
+extension Form1ViewController: SurveyGettable {
+    func getSurvey(_ survey: SurveyAnswer) {
+        viewModel.inputs.survey(survey)
     }
 }

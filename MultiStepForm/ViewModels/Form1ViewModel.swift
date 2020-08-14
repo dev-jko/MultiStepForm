@@ -10,24 +10,20 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-enum Form1InputData {
-    case next
-    case back
-}
-
-enum Form1ViewControllerData {
+enum Form1Coordinating {
     case next(SurveyAnswer)
     case back
 }
 
 protocol Form1ViewModelInputs {
     func survey(_ survey: SurveyAnswer)
-    func navigationButtonClicked(_ type: Form1InputData)
+    func nextButtonClicked()
+    func backButtonClicked()
     func textAnswer(_ text: String)
 }
 
 protocol Form1ViewModelOutputs {
-    func coordinating() -> Signal<Form1ViewControllerData>
+    func coordinate() -> Signal<Form1Coordinating>
     func surveyAnswerText() -> Driver<String>
 }
 
@@ -52,9 +48,14 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
         surveyProperty.accept(survey)
     }
     
-    private let navigationButtonClickedProperty: PublishRelay<Form1InputData> = PublishRelay()
-    func navigationButtonClicked(_ type: Form1InputData) {
-        navigationButtonClickedProperty.accept(type)
+    private let nextButtonClickedProperty: PublishRelay<Void> = PublishRelay()
+    func nextButtonClicked() {
+        nextButtonClickedProperty.accept(Void())
+    }
+    
+    private let backButtonClickedProperty: PublishRelay<Void> = PublishRelay()
+    func backButtonClicked() {
+        backButtonClickedProperty.accept(Void())
     }
     
     private let textAnswerProperty: PublishRelay<String> = PublishRelay()
@@ -64,8 +65,8 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
     
     // MARK: - Outputs
 
-    private let coordinatingProperty: PublishRelay<Form1ViewControllerData> = PublishRelay()
-    func coordinating() -> Signal<Form1ViewControllerData> {
+    private let coordinatingProperty: PublishRelay<Form1Coordinating> = PublishRelay()
+    func coordinate() -> Signal<Form1Coordinating> {
         return coordinatingProperty.asSignal()
     }
     
@@ -77,8 +78,6 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
     // MARK: - Lifecycle
     
     init() {
-        print("form 1 view model init")
-        
         surveyProperty
             .map { $0.text }
             .bind(to: surveyAnswerTextProperty)
@@ -91,16 +90,14 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
                 return newSurvey
             })
         
-        navigationButtonClickedProperty
-            .filter { $0 == Form1InputData.next }
+        nextButtonClickedProperty
             .withLatestFrom(modifiedSurvey)
-            .map { Form1ViewControllerData.next($0) }
+            .map { Form1Coordinating.next($0) }
             .bind(to: coordinatingProperty)
             .disposed(by: disposeBag)
         
-        navigationButtonClickedProperty
-            .filter { $0 == Form1InputData.back }
-            .map { _ in Form1ViewControllerData.back }
+        backButtonClickedProperty
+            .map { _ in Form1Coordinating.back }
             .bind(to: coordinatingProperty)
             .disposed(by: disposeBag)
     }

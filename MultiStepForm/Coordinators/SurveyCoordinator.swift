@@ -8,6 +8,14 @@
 
 import UIKit
 
+protocol SurveyGettable {
+    func getSurvey(_ survey: SurveyAnswer)
+}
+
+protocol PreviousFormCoordinateType: class {
+    func backToPreviousForm(survey: SurveyAnswer)
+}
+
 protocol Form2CoordinatorType: class {
     func pushToForm2(survey: SurveyAnswer)
 }
@@ -75,5 +83,14 @@ extension SurveyCoordinator: SurveyFinishCoordinatorType {
     func finishSurveyForm() {
         navigationController.dismiss(animated: true, completion: nil)
         parent?.popChild()
+    }
+}
+
+extension SurveyCoordinator: PreviousFormCoordinateType {
+    func backToPreviousForm(survey: SurveyAnswer) {
+        navigationController.popViewController(animated: true)
+        if let viewController = navigationController.topViewController as? SurveyGettable {
+            viewController.getSurvey(survey)
+        }
     }
 }

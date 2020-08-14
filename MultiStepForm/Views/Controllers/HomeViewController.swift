@@ -55,8 +55,13 @@ class HomeViewController: UIViewController {
             .bind(onNext: { [weak self] in self?.viewModel.inputs.surveyButtonClicked() })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.presentSurveyForm()
-            .emit(onNext: { [weak self] in self?.coordinator?.pushToSurveyForm() })
+        viewModel.outputs.coordinate()
+            .emit(onNext: { [weak self] in
+                switch $0 {
+                case .survey:
+                    self?.coordinator?.pushToSurveyForm()
+                }
+            })
             .disposed(by: disposeBag)
     }
     

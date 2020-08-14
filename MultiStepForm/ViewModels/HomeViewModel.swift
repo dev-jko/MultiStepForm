@@ -10,12 +10,16 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+enum HomeCoordinating {
+    case survey
+}
+
 protocol HomeViewModelInputs {
     func surveyButtonClicked()
 }
 
 protocol HomeViewModelOutputs {
-    func presentSurveyForm() -> Signal<Void>
+    func coordinate() -> Signal<HomeCoordinating>
 }
 
 protocol HomeViewModelType {
@@ -41,9 +45,9 @@ HomeViewModelInputs, HomeViewModelOutputs {
     
     // MARK: - Outputs
     
-    private let presentSurveyFormProperty: PublishRelay<Void> = PublishRelay()
-    func presentSurveyForm() -> Signal<Void> {
-        return presentSurveyFormProperty.asSignal()
+    private let coordinateProperty: PublishRelay<HomeCoordinating> = PublishRelay()
+    func coordinate() -> Signal<HomeCoordinating> {
+        return coordinateProperty.asSignal()
     }
     
     
@@ -51,7 +55,8 @@ HomeViewModelInputs, HomeViewModelOutputs {
     
     init() {
         surveyButtonClickedProperty
-            .bind(to: presentSurveyFormProperty)
+            .map { HomeCoordinating.survey }
+            .bind(to: coordinateProperty)
             .disposed(by: disposeBag)
     }
     

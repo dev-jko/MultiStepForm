@@ -7,30 +7,36 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class Form2ViewController: UIViewController {    
     
     // MARK: - UI Properties
     
     private let buttons: [UIButton] = [UIButton(), UIButton()]
-    private var button1: UIButton { buttons[0] }
-    private var button2: UIButton { buttons[1] }
+    private let nextButton: UIBarButtonItem = UIBarButtonItem()
+    private let backButton: UIBarButtonItem = UIBarButtonItem()
     
     // MARK: - Properties
     
-    private let survey: SurveyAnswer
-    private weak var coordinator: Form3CoordinatorType?
+    private let disposeBag = DisposeBag()
+    private weak var coordinator: (Form3CoordinatorType & PreviousFormCoordinateType)?
+    private let viewModel: Form2ViewModelType
     
     // MARK: - Lifecycle
     
     init(
         survey: SurveyAnswer,
-        coordinator: Form3CoordinatorType
+        coordinator: Form3CoordinatorType & PreviousFormCoordinateType,
+        viewModel: Form2ViewModelType
     ) {
-        self.survey = survey
         self.coordinator = coordinator
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        
+        viewModel.inputs.survey(survey)
     }
     
     required init?(coder: NSCoder) {
@@ -42,87 +48,105 @@ class Form2ViewController: UIViewController {
         
         setUpLayout()
         bindStyles()
-        setNextButton()
-        
-        buttons.enumerated().forEach { index, btn in
-            btn.tag = index
-            btn.addTarget(self, action: #selector(buttonClicked), for: .touchUpInside)
-        }
+        bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        buttonSelectionChagned(index: survey.radio.rawValue - 1)
+    deinit {
+        print("form 2 view controller deinited")
     }
     
     // MARK: - Functions
     
+    private func bindViewModel() {
+        
+        nextButton.rx.tap
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.nextButtonClicked() })
+            .disposed(by: disposeBag)
+        
+        backButton.rx.tap
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.backButtonClicked() })
+            .disposed(by: disposeBag)
+        
+        buttons.enumerated().forEach({ [weak self] idx, btn in
+            btn.rx.tap
+                .bind(onNext: { self?.viewModel.inputs.radioButtonClicked(index: idx) })
+                .disposed(by: disposeBag)
+        })
+        
+        viewModel.outputs.selectedRadioButton()
+            .drive(onNext: { [weak self] in self?.buttonSelectionChagned(index: $0) })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.coordinate()
+            .emit(onNext: { [weak self] in
+                switch $0 {
+                case .next(let survey):
+                    self?.coordinator?.pushToForm3(survey: survey)
+                case .back(let survey):
+                    self?.coordinator?.backToPreviousForm(survey: survey)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func setUpLayout() {
-        [button1, button2].forEach {
+        navigationItem.setRightBarButton(nextButton, animated: true)
+        navigationItem.setLeftBarButton(backButton, animated: true)
+        
+        buttons.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
         
         NSLayoutConstraint.activate([
-            button1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            button1.trailingAnchor.constraint(equalTo: button2.leadingAnchor),
-            button1.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            buttons[0].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            buttons[0].trailingAnchor.constraint(equalTo: buttons[1].leadingAnchor),
+            buttons[0].topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             
-            button2.leadingAnchor.constraint(equalTo: button1.trailingAnchor),
-            button2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            button2.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            button2.widthAnchor.constraint(equalTo: button1.widthAnchor)
+            buttons[1].leadingAnchor.constraint(equalTo: buttons[0].trailingAnchor),
+            buttons[1].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            buttons[1].topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            buttons[1].widthAnchor.constraint(equalTo: buttons[0].widthAnchor)
         ])
     }
     
     private func bindStyles() {
         view.backgroundColor = .white
         
-        [button1, button2].forEach { btn in
+        buttons.forEach { btn in
             btn.setTitleColor(.black, for: .normal)
             btn.setTitleColor(.white, for: .selected)
             btn.backgroundColor = .white
             btn.layer.borderColor = UIColor.black.cgColor
             btn.layer.borderWidth = 1
         }
-        button1.setTitle("A", for: .normal)
-        button2.setTitle("B", for: .normal)
-    }
-    
-    private func setNextButton() {
-        let nextButton = UIBarButtonItem(
-            title: "Next",
-            style: .done,
-            target: self,
-            action: #selector(nextButtonClicked(_:))
-        )
-        navigationItem.setRightBarButton(nextButton, animated: true)
-    }
-    
-    @objc
-    private func nextButtonClicked(_ sender: UIBarButtonItem) {
-        coordinator?.pushToForm3(survey: survey)
+        buttons[0].setTitle("A", for: .normal)
+        buttons[1].setTitle("B", for: .normal)
+        
+        nextButton.title = "Next"
+        nextButton.style = .done
+        
+        backButton.title = "Back"
+        backButton.style = .plain
     }
     
     private func buttonSelectionChagned(index: Int) {
-        buttons.forEach { btn in
-            if btn.tag == index {
+        buttons.enumerated().forEach { idx, btn in
+            if idx == index {
+                btn.isSelected = true
                 btn.backgroundColor = .systemBlue
                 btn.layer.borderWidth = 0
-                btn.isSelected = true
             } else {
+                btn.isSelected = false
                 btn.backgroundColor = .white
                 btn.layer.borderWidth = 1
-                btn.isSelected = false
             }
         }
     }
-    
-    @objc
-    private func buttonClicked(_ sender: UIButton) {
-        guard let selection = SurveyAnswer.Radio(rawValue: sender.tag + 1) else { return }
-//        survey.radio = selection
-        buttonSelectionChagned(index: sender.tag)
+}
+
+extension Form2ViewController: SurveyGettable {
+    func getSurvey(_ survey: SurveyAnswer) {
+        viewModel.inputs.survey(survey)
     }
 }

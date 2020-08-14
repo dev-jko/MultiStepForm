@@ -34,7 +34,8 @@ extension AppDependency {
                         form2ViewControllerFactory: { survey, coordinator in
                             Form2ViewController(
                                 survey: survey,
-                                coordinator: coordinator
+                                coordinator: coordinator,
+                                viewModel: Form2ViewModel()
                             )
                         },
                         form3ViewControllerFactory: { survey, coordinator in
@@ -73,9 +74,9 @@ extension Form1ViewController {
 }
 
 extension Form2ViewController {
-    typealias Factory = (SurveyAnswer, Form3CoordinatorType) -> Form2ViewController
+    typealias Factory = (SurveyAnswer, Form3CoordinatorType & PreviousFormCoordinateType) -> Form2ViewController
 }
 
 extension Form3ViewController {
-    typealias Factory = (SurveyAnswer, SurveyFinishCoordinatorType) -> Form3ViewController
+    typealias Factory = (SurveyAnswer, SurveyFinishCoordinatorType & PreviousFormCoordinateType) -> Form3ViewController
 }
