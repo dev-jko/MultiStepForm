@@ -85,7 +85,7 @@ final class Form1ViewController: UIViewController {
                 switch $0 {
                 case .next(let survey):
                     self?.coordinator?.pushToForm2(survey: survey)
-                case .back:
+                case .close:
                     self?.coordinator?.finishSurveyForm()
                 }
             })

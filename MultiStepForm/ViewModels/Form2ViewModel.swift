@@ -123,4 +123,3 @@ Form2ViewModelInputs, Form2ViewModelOutputs {
     
     // MARK: - Functions
 }
-

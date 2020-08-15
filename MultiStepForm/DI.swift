@@ -10,7 +10,7 @@ import UIKit
 
 extension AppDependency {
     static func resolve() -> AppDependency {
-        let network: NetworkType = Network()
+        let network: RxNetworkType = RxNetwork()
         
         return .init(
             appCoordinator: AppCoordinator(
@@ -42,7 +42,7 @@ extension AppDependency {
                             Form3ViewController(
                                 survey: survey,
                                 coordinator: coordinator,
-                                network: network
+                                viewModel: Form3ViewModel(network: network)
                             )
                         }
                     )

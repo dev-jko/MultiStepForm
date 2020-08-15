@@ -16,6 +16,13 @@ public class LoadingIndicator: UIView {
     
     // MARK: - Properties
     
+    public var isLoading: Bool = false {
+        didSet {
+            if isLoading { startAnimating() }
+            else { stopAnimating() }
+        }
+    }
+    
     // MARK: - Lifecycle
     
     override init(frame: CGRect) {
@@ -23,7 +30,6 @@ public class LoadingIndicator: UIView {
         
         setUpLayout()
         bindStyles()
-        stopAnimating()
     }
     
     required init?(coder: NSCoder) {

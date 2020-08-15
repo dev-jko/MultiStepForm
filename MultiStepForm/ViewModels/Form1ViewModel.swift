@@ -12,7 +12,7 @@ import RxCocoa
 
 enum Form1Coordinating {
     case next(SurveyAnswer)
-    case back
+    case close
 }
 
 protocol Form1ViewModelInputs {
@@ -97,7 +97,7 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
             .disposed(by: disposeBag)
         
         backButtonClickedProperty
-            .map { _ in Form1Coordinating.back }
+            .map { _ in Form1Coordinating.close }
             .bind(to: coordinatingProperty)
             .disposed(by: disposeBag)
     }

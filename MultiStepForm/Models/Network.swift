@@ -7,14 +7,15 @@
 //
 
 import Foundation
+import RxSwift
 
-protocol NetworkType {
+fileprivate protocol NetworkType {
     typealias SurveySubmitResult = Result<String, Error>
     
     func submitSurvey(survey: SurveyAnswer, completion: @escaping (SurveySubmitResult) -> Void)
 }
 
-struct Network: NetworkType {
+fileprivate struct Network: NetworkType {
     func submitSurvey(
         survey: SurveyAnswer,
         completion: @escaping (SurveySubmitResult) -> Void
@@ -26,6 +27,25 @@ struct Network: NetworkType {
             DispatchQueue.main.async {
                 completion(.success("설문에 참여해주셔서 감사합니다"))
             }
+        }
+    }
+}
+
+protocol RxNetworkType {
+    typealias SurveySubmitResult = Result<String, Error>
+    
+    func submitSurvey(survey: SurveyAnswer) -> Single<SurveySubmitResult>
+}
+
+struct RxNetwork: RxNetworkType {
+    private let network: NetworkType = Network()
+    
+    func submitSurvey(survey: SurveyAnswer) -> Single<SurveySubmitResult> {
+        return Single.create { single in
+            self.network.submitSurvey(survey: survey, completion: { result in
+                single(.success(result))
+            })
+            return Disposables.create()
         }
     }
 }

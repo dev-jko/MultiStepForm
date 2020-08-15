@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class Form3ViewController: UIViewController {
     
@@ -14,25 +16,28 @@ class Form3ViewController: UIViewController {
     
     private let buttons: [UIButton] = [UIButton(), UIButton(), UIButton(), UIButton()]
     private let loadingIndicator: LoadingIndicator = LoadingIndicator()
+    private let submitButton = UIBarButtonItem()
+    private let backButton = UIBarButtonItem()
     
     // MARK: - Properties
     
-    private let survey: SurveyAnswer
     private weak var coordinator: (SurveyFinishCoordinatorType & PreviousFormCoordinateType)?
-    private let network: NetworkType
+    private let viewModel: Form3ViewModelType
+    private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle
     
     init(
         survey: SurveyAnswer,
         coordinator: SurveyFinishCoordinatorType & PreviousFormCoordinateType,
-        network: NetworkType
+        viewModel: Form3ViewModelType
     ) {
-        self.survey = survey
         self.coordinator = coordinator
-        self.network = network
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        
+        viewModel.inputs.survey(survey)
     }
     
     required init?(coder: NSCoder) {
@@ -44,7 +49,7 @@ class Form3ViewController: UIViewController {
         
         setUpLayout()
         bindStyles()
-        setSubmitButton()
+        bindViewModel()
         
         buttons.enumerated().forEach { index, btn in
             btn.tag = index
@@ -52,17 +57,56 @@ class Form3ViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        for i in 0..<buttons.count {
-            buttonSelectionChagned(isSelected: survey.checkbox[i], index: i)
-        }
+    deinit {
+        print("form 3 view controller deinited")
     }
     
     // MARK: - Functions
     
+    private func bindViewModel() {
+        
+//        self?.alert(title: "제출 완료", message: msg, completion: self?.coordinator?.finishSurveyForm)
+//        self?.alert(title: "에러", message: err.localizedDescription, completion: nil)
+        
+        submitButton.rx.tap
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.submitButtonClicked() })
+            .disposed(by: disposeBag)
+            
+        backButton.rx.tap
+            .bind(onNext: { [weak self] in self?.viewModel.inputs.backButtonClicked() })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.isLoading()
+            .drive(onNext: { [weak self] in self?.loadingIndicator.isLoading = $0 })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.alert()
+            .emit(onNext: { [weak self] type in
+                switch type {
+                case .success(let msg):
+                    self?.alert(title: type.title, message: msg, completion: self?.viewModel.inputs.submissionSuccess)
+                case .error(let err):
+                    self?.alert(title: type.title, message: err, completion: nil)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.coordinate()
+            .emit(onNext: { [weak self] in
+                switch $0 {
+                case .finish:
+                    self?.coordinator?.finishSurveyForm()
+                case .back(let survey):
+                    self?.coordinator?.backToPreviousForm(survey: survey)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func setUpLayout() {
+        navigationItem.setRightBarButton(submitButton, animated: true)
+        navigationItem.setLeftBarButton(backButton, animated: true)
+        
         (buttons + [loadingIndicator])
             .forEach {
                 $0.translatesAutoresizingMaskIntoConstraints = false
@@ -105,30 +149,12 @@ class Form3ViewController: UIViewController {
         buttons[1].setTitle("B", for: .normal)
         buttons[2].setTitle("C", for: .normal)
         buttons[3].setTitle("D", for: .normal)
-    }
-    
-    private func setSubmitButton() {
-        let submitButton = UIBarButtonItem(
-            title: "Submit",
-            style: .done,
-            target: self,
-            action: #selector(submitButtonClicked(_:))
-        )
-        navigationItem.setRightBarButton(submitButton, animated: true)
-    }
-    
-    @objc
-    private func submitButtonClicked(_ sender: UIBarButtonItem) {
-        loadingIndicator.startAnimating()
-        network.submitSurvey(survey: survey) { [weak self] result in
-            self?.loadingIndicator.stopAnimating()
-            switch result {
-            case .success(let msg):
-                self?.alert(title: "제출 완료", message: msg, completion: self?.coordinator?.finishSurveyForm)
-            case .failure(let err):
-                self?.alert(title: "에러", message: err.localizedDescription, completion: nil)
-            }
-        }
+        
+        submitButton.title = "Submit"
+        submitButton.style = .done
+        
+        backButton.title = "Back"
+        backButton.style = .plain
     }
     
     private func buttonSelectionChagned(isSelected: Bool, index: Int) {
