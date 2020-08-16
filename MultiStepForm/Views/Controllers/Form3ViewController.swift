@@ -14,7 +14,7 @@ class Form3ViewController: UIViewController {
     
     // MARK: - UI Properties
     
-    private let buttons: [UIButton] = [UIButton(), UIButton(), UIButton(), UIButton()]
+    private let stackView: UIStackView = UIStackView()
     private let loadingIndicator: LoadingIndicator = LoadingIndicator()
     private let submitButton = UIBarButtonItem()
     private let backButton = UIBarButtonItem()
@@ -22,7 +22,7 @@ class Form3ViewController: UIViewController {
     // MARK: - Properties
     
     private weak var coordinator: (SurveyFinishCoordinatorType & PreviousFormCoordinateType)?
-    private let viewModel: Form3ViewModelType
+    private var viewModel: Form3ViewModelType
     private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle
@@ -50,11 +50,6 @@ class Form3ViewController: UIViewController {
         setUpLayout()
         bindStyles()
         bindViewModel()
-        
-        buttons.enumerated().forEach { index, btn in
-            btn.tag = index
-            btn.addTarget(self, action: #selector(buttonClicked), for: .touchUpInside)
-        }
     }
     
     deinit {
@@ -65,9 +60,6 @@ class Form3ViewController: UIViewController {
     
     private func bindViewModel() {
         
-//        self?.alert(title: "제출 완료", message: msg, completion: self?.coordinator?.finishSurveyForm)
-//        self?.alert(title: "에러", message: err.localizedDescription, completion: nil)
-        
         submitButton.rx.tap
             .bind(onNext: { [weak self] in self?.viewModel.inputs.submitButtonClicked() })
             .disposed(by: disposeBag)
@@ -76,10 +68,23 @@ class Form3ViewController: UIViewController {
             .bind(onNext: { [weak self] in self?.viewModel.inputs.backButtonClicked() })
             .disposed(by: disposeBag)
         
+        viewModel.outputs.checkboxes()
+            .compactMap({ [weak self] in self?.makeCheckboxButtons(descriptions: $0) })
+            .drive(onNext: { [weak self] btns in
+                self?.configureCheckbox(buttons: btns)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.checkboxStates()
+            .drive(onNext: { [weak self] states in
+                states.enumerated().forEach { self?.buttonSelectionChagned(index: $0, isSelected: $1) }
+            })
+            .disposed(by: disposeBag)
+
         viewModel.outputs.isLoading()
             .drive(onNext: { [weak self] in self?.loadingIndicator.isLoading = $0 })
             .disposed(by: disposeBag)
-        
+
         viewModel.outputs.alert()
             .emit(onNext: { [weak self] type in
                 switch type {
@@ -107,30 +112,15 @@ class Form3ViewController: UIViewController {
         navigationItem.setRightBarButton(submitButton, animated: true)
         navigationItem.setLeftBarButton(backButton, animated: true)
         
-        (buttons + [loadingIndicator])
-            .forEach {
-                $0.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview($0)
+        [stackView, loadingIndicator].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
         }
         
         NSLayoutConstraint.activate([
-            buttons[0].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            buttons[0].trailingAnchor.constraint(equalTo: buttons[1].leadingAnchor),
-            buttons[0].topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            
-            buttons[1].leadingAnchor.constraint(equalTo: buttons[0].trailingAnchor),
-            buttons[1].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            buttons[1].topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-            buttons[1].widthAnchor.constraint(equalTo: buttons[0].widthAnchor),
-            
-            buttons[2].leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            buttons[2].trailingAnchor.constraint(equalTo: buttons[3].leadingAnchor),
-            buttons[2].topAnchor.constraint(equalTo: buttons[0].bottomAnchor),
-            
-            buttons[3].leadingAnchor.constraint(equalTo: buttons[2].trailingAnchor),
-            buttons[3].trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            buttons[3].topAnchor.constraint(equalTo: buttons[0].bottomAnchor),
-            buttons[3].widthAnchor.constraint(equalTo: buttons[2].widthAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -140,25 +130,18 @@ class Form3ViewController: UIViewController {
     private func bindStyles() {
         view.backgroundColor = .white
         
-        buttons.forEach { btn in
-            btn.setTitleColor(.black, for: .normal)
-            btn.setTitleColor(.white, for: .selected)
-            btn.layer.borderColor = UIColor.black.cgColor
-        }
-        buttons[0].setTitle("A", for: .normal)
-        buttons[1].setTitle("B", for: .normal)
-        buttons[2].setTitle("C", for: .normal)
-        buttons[3].setTitle("D", for: .normal)
-        
         submitButton.title = "Submit"
         submitButton.style = .done
         
         backButton.title = "Back"
         backButton.style = .plain
+        
+        stackView.axis = .vertical
+        stackView.alignment = .center
     }
     
-    private func buttonSelectionChagned(isSelected: Bool, index: Int) {
-        let btn = buttons[index]
+    private func buttonSelectionChagned(index: Int, isSelected: Bool) {
+        guard let btn = stackView.arrangedSubviews.indexAt(index: index) as? UIButton else { return }
         if isSelected {
             btn.backgroundColor = .systemBlue
             btn.layer.borderWidth = 0
@@ -170,11 +153,29 @@ class Form3ViewController: UIViewController {
         }
     }
     
+    private func makeCheckboxButtons(descriptions: [String]) -> [UIButton] {
+        return descriptions.map {
+            let btn = UIButton()
+            btn.setTitleColor(.black, for: .normal)
+            btn.setTitleColor(.white, for: .selected)
+            btn.layer.borderColor = UIColor.black.cgColor
+            btn.setTitle($0, for: .normal)
+            return btn
+        }
+    }
+    
+    private func configureCheckbox(buttons: [UIButton]) {
+        buttons.enumerated().forEach { idx, btn in
+            stackView.addArrangedSubview(btn)
+            btn.translatesAutoresizingMaskIntoConstraints = false
+            btn.widthAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor, multiplier: 0.6).isActive = true
+            btn.tag = idx
+            btn.addTarget(self, action: #selector(checkboxButtonClicked(_:)), for: .touchUpInside)
+        }
+    }
+    
     @objc
-    private func buttonClicked(_ sender: UIButton) {
-        let index = sender.tag
-        let value = !sender.isSelected
-//        survey.checkbox[index] = value
-        buttonSelectionChagned(isSelected: value, index: index)
+    private func checkboxButtonClicked(_ sender: UIButton) {
+        viewModel.inputs.checkboxButtonClicked(index: sender.tag)
     }
 }

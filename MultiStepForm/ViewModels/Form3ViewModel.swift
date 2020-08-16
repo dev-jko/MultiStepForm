@@ -43,6 +43,8 @@ protocol Form3ViewModelOutputs {
     func isLoading() -> Driver<Bool>
     func coordinate() -> Signal<Form3Coordinating>
     func alert() -> Signal<Form3AlertType>
+    func checkboxes() -> Driver<[String]>
+    func checkboxStates() -> Driver<[Bool]>
 }
 
 protocol Form3ViewModelType {
@@ -103,14 +105,52 @@ Form3ViewModelInputs, Form3ViewModelOutputs {
         return alertProperty.asSignal()
     }
     
+    private let checkboxesProperty = BehaviorRelay<[String]>(value: [])
+    func checkboxes() -> Driver<[String]> {
+        return checkboxesProperty.asDriver()
+    }
+    
+    private let checkboxStatesProperty = BehaviorRelay<[Bool]>(value: [])
+    func checkboxStates() -> Driver<[Bool]> {
+        return checkboxStatesProperty.asDriver()
+    }
+    
     // MARK: - Lifecycle
     
     init(network: RxNetworkType) {
         
-        let modifiedSurvey = Observable.merge(surveyProperty.asObservable())
+        surveyProperty
+            .map { $0.checkbox.descriptions }
+            .bind(to: checkboxesProperty)
+            .disposed(by: disposeBag)
+        
+        surveyProperty
+            .map { $0.checkbox.states }
+            .bind(to: checkboxStatesProperty)
+            .disposed(by: disposeBag)
+        
+        checkboxButtonClickedProperty
+            .withLatestFrom(checkboxStatesProperty) { index, states in (index, states) }
+            .map({ index, states -> [Bool] in
+                guard index < states.count else { return states }
+                var newStates = states
+                newStates[index].toggle()
+                return newStates
+            })
+            .bind(to: checkboxStatesProperty)
+            .disposed(by: disposeBag)
+        
+        let modifiedSurvey = Observable.combineLatest(surveyProperty, checkboxStatesProperty)
+            .map({ survey, states -> SurveyAnswer in
+                var newSurvey = survey
+                newSurvey.checkbox.states = states
+                return newSurvey
+            })
+        
+        let survey = Observable.merge(surveyProperty.asObservable(), modifiedSurvey)
         
         submitButtonClickedProperty
-            .withLatestFrom(modifiedSurvey)
+            .withLatestFrom(survey)
             .do(onNext: { [weak self] _ in self?.isLoadingProperty.accept(true) })
             .flatMap(network.submitSurvey(survey:))
             .bind(onNext: { [weak self] result in
@@ -125,7 +165,7 @@ Form3ViewModelInputs, Form3ViewModelOutputs {
             .disposed(by: disposeBag)
         
         backButtonClickedProperty
-            .withLatestFrom(modifiedSurvey)
+            .withLatestFrom(survey)
             .map { Form3Coordinating.back($0) }
             .bind(to: coordinateProperty)
             .disposed(by: disposeBag)

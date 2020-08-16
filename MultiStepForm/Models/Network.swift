@@ -21,9 +21,16 @@ fileprivate struct Network: NetworkType {
         completion: @escaping (SurveySubmitResult) -> Void
     ) {
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 2) {
-            print(survey.text)
-            print(survey.radio)
-            print(survey.checkbox)
+            
+            let string = """
+            --submission--
+            text     : \(survey.text)
+            radio    : \(survey.radio)
+            checkbox : \(survey.checkbox.states)
+            --------------
+            """
+            print(string)
+            
             DispatchQueue.main.async {
                 completion(.success("설문에 참여해주셔서 감사합니다"))
             }

@@ -26,6 +26,7 @@
 		08C2255924E50FED007A89F5 /* Form1ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2255824E50FED007A89F5 /* Form1ViewModel.swift */; };
 		08C2255B24E5467C007A89F5 /* Form2ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2255A24E5467C007A89F5 /* Form2ViewModel.swift */; };
 		08C2255D24E7EF32007A89F5 /* Form3ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2255C24E7EF32007A89F5 /* Form3ViewModel.swift */; };
+		08C2255F24E83014007A89F5 /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2255E24E83014007A89F5 /* Array+.swift */; };
 		74ABB183065C4D9FABBBAF3D /* Pods_MultiStepForm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09ED9778C0522B3A9F700D95 /* Pods_MultiStepForm.framework */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		08C2255824E50FED007A89F5 /* Form1ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form1ViewModel.swift; sourceTree = "<group>"; };
 		08C2255A24E5467C007A89F5 /* Form2ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form2ViewModel.swift; sourceTree = "<group>"; };
 		08C2255C24E7EF32007A89F5 /* Form3ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form3ViewModel.swift; sourceTree = "<group>"; };
+		08C2255E24E83014007A89F5 /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		09ED9778C0522B3A9F700D95 /* Pods_MultiStepForm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MultiStepForm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FC4074EF8146C59186987E /* Pods-MultiStepForm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultiStepForm.debug.xcconfig"; path = "Target Support Files/Pods-MultiStepForm/Pods-MultiStepForm.debug.xcconfig"; sourceTree = "<group>"; };
 		9B85FC9ED75C993069160B9F /* Pods-MultiStepForm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultiStepForm.release.xcconfig"; path = "Target Support Files/Pods-MultiStepForm/Pods-MultiStepForm.release.xcconfig"; sourceTree = "<group>"; };
@@ -110,7 +112,7 @@
 			children = (
 				08A7AD2A24DD0AB80024D6C1 /* AppDelegate.swift */,
 				0891677724DFE1C600947DB7 /* DI.swift */,
-				08B2455524E16631002981F7 /* Extensions */,
+				08B2455524E16631002981F7 /* Library */,
 				0891677224DFDFED00947DB7 /* Coordinators */,
 				08A7AD5024DD0CBC0024D6C1 /* Models */,
 				08C2255524E2764C007A89F5 /* ViewModels */,
@@ -142,12 +144,13 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		08B2455524E16631002981F7 /* Extensions */ = {
+		08B2455524E16631002981F7 /* Library */ = {
 			isa = PBXGroup;
 			children = (
 				08B2455624E1665A002981F7 /* Alertable.swift */,
+				08C2255E24E83014007A89F5 /* Array+.swift */,
 			);
-			path = Extensions;
+			path = Library;
 			sourceTree = "<group>";
 		};
 		08C2255524E2764C007A89F5 /* ViewModels */ = {
@@ -305,6 +308,7 @@
 				08A7AD5624DD0D4B0024D6C1 /* SurveyAnswer.swift in Sources */,
 				08A7AD2F24DD0AB80024D6C1 /* Form1ViewController.swift in Sources */,
 				08C2255724E27680007A89F5 /* HomeViewModel.swift in Sources */,
+				08C2255F24E83014007A89F5 /* Array+.swift in Sources */,
 				0891677624DFE05D00947DB7 /* AppCoordinator.swift in Sources */,
 				08A7AD2B24DD0AB80024D6C1 /* AppDelegate.swift in Sources */,
 				0891677824DFE1C600947DB7 /* DI.swift in Sources */,
