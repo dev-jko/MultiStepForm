@@ -34,7 +34,7 @@ HomeViewModelInputs, HomeViewModelOutputs {
     
     var inputs: HomeViewModelInputs { return self }
     var outputs: HomeViewModelOutputs { return self }
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     // MARK: - Inputs
     

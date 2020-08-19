@@ -59,7 +59,7 @@ Form3ViewModelInputs, Form3ViewModelOutputs {
     
     var inputs: Form3ViewModelInputs { return self }
     var outputs: Form3ViewModelOutputs { return self }
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     // MARK: - Inputs
     

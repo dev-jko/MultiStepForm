@@ -22,7 +22,7 @@ class Form3ViewController: UIViewController {
     // MARK: - Properties
     
     private weak var coordinator: (SurveyFinishCoordinatorType & PreviousFormCoordinateType)?
-    private var viewModel: Form3ViewModelType
+    private let viewModel: Form3ViewModelType
     private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle

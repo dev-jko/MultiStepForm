@@ -39,7 +39,7 @@ Form1ViewModelInputs, Form1ViewModelOutputs {
     
     var inputs: Form1ViewModelInputs { return self }
     var outputs: Form1ViewModelOutputs { return self }
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     // MARK: - Inputs
     
